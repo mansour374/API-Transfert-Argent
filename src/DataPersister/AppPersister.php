@@ -27,6 +27,7 @@ private $encoder;
     public function persist($data)
     {
         $data->setPassword($this->encoder->encodePassword($data, $data->getPassword()));
+        $data->setRoles(["ROLE_".$data->getRole()->getlibelle()]);
         $data->eraseCredentials();
 
         $this->entityManagerInterface->persist($data);

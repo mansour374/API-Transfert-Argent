@@ -13,20 +13,20 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  * @UniqueEntity(fields={"username"}, message="Cet utilisateur existe déja")
  * @ApiResource(
  *      collectionOperations = {
- *      "get"= {"security"= "is_granted(['ROLE_SUP_ADMIN'])"},
+ *      "get"= {"security"= "is_granted(['ROLE_ADMIN_SYSTEME'])"},
  * 
  *      "CreatedAdmin"={"method"= "POST", 
  *      "path"="/users/admin/new",
- *      "security"= "is_granted(['ROLE_SUP_ADMIN'])" },
+ *      "security"= "is_granted(['ROLE_ADMIN_SYSTEME'])" },
  * 
  *      "CreatedCaissier"={"method"= "POST", 
  *      "path"="/users/caissier/new", 
- *      "security"="is_granted(['ROLE_SUP_ADMIN','ROLE_ADMIN'])"}
+ *      "security"="is_granted(['ROLE_ADMIN_SYSTEME','ROLE_ADMIN'])"}
  *     },
  * 
  *       itemOperations = {
  *         "get"={
- *            "security"= "is_granted(['ROLE_SUP_ADMIN','Role_ADMIN'])",
+ *            "security"= "is_granted(['ROLE_ADMIN_SYSTEME','ROLE_ADMIN'])",
  *             "security_message"="Vous n'etes pas autorister à lister des utilisateurs, droit reservé au SUP_ADMIN et l'ADMIN" 
  *            },
  * 
@@ -37,12 +37,12 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  *           },
  *           
  *          "blockedCaissier"={
- *             "method"="PUT",
+ *             "method"="put",
  *              "path"="/users/caissier/{id}",
  *              "security_message"="seule le SUP_ADMIN et l'Admin peuvent bloquer un adminitrateur"
  *           },
  *          
- *          "delete"={"security"= "is_granted(['ROLE_SUP_ADMIN','Role_ADMIN'])"}
+ *          "delete"={"security"= "is_granted(['ROLE_ADMIN_SYSTEME'])"}
  *              
  *      } 
  *  )
@@ -111,10 +111,8 @@ class User implements AdvancedUserInterface
      */
     public function getRoles(): array
     {
-        $roles = [$this->role->getLibelle()];
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
+        $roles = $this->roles;
+      
         return $roles;
     }
 

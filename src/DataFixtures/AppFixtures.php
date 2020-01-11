@@ -18,21 +18,36 @@ class AppFixtures extends Fixture
     }
 
     public function load(ObjectManager $manager)
-    {
-        $role = new Role();
-        $role->setLibelle("ROLE_SUP_ADMIN");
-        $manager->persist($role);
-        $manager->flush();
-        $this->addReference('roleAdmin', $role);
+    {   
+        //hydratation du role ADMIN_SYSTEME
+        $roleAdminSysteme = new Role();
+        $roleAdminSysteme->setLibelle("ADMIN_SYSTEME");
+        $manager->persist($roleAdminSysteme);
+
+        //hydratation du role ADMIN
+        $roleAdmin = new Role();
+        $roleAdmin->setLibelle("ADMIN");
+        $manager->persist($roleAdmin);
+
+        //hydratation du role CAISSIER
+        $roleCaissier = new role();
+        $roleCaissier->setLibelle("CAISSIER");
+        $manager->persist($roleCaissier);
+
+        //hydratation de la table role 
+        $this->addReference('ADMIN_SYSTEME', $roleAdminSysteme);
+        $this->addReference('ADMIN', $roleAdmin);
+        $this->addReference('CAISSiER', $roleCaissier);
+
          
-        $roleSupAdmin = $this->getReference('roleAdmin');
+        $roleSupAdmin = $this->getReference('ADMIN_SYSTEME');
         
         $user = new User();
         $user->setUsername("mansour");
-        $user->setRoles((array("ROLE_USER")));
-        $user->setPassword($this->encoder->encodePassword($user, "admin"));
+        $user->setRoles((array("ROLE_".$roleSupAdmin->getLibelle())));
+        $user->setPassword($this->encoder->encodePassword($user, "Admin"));
         $user->setRole($roleSupAdmin);
-        
+        $user->setIsActive(true);
 
         $manager->persist($user);
         $manager->flush();
