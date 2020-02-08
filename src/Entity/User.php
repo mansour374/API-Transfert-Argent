@@ -2,8 +2,16 @@
 
 namespace App\Entity;
 
+
+
+
+use App\Controller\UserControle;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
@@ -12,39 +20,31 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @UniqueEntity(fields={"username"}, message="Cet utilisateur existe déja")
  * @ApiResource(
- *      collectionOperations = {
- *      "get"= {"security"= "is_granted(['ROLE_ADMIN_SYSTEME'])"},
+ *          attributes={"force_eager"=false},
+ *          normalizationContext={"groups"={"read"}},
+ *          denormalizationContext={"groups"={"write"}},
  * 
- *      "CreatedAdmin"={"method"= "POST", 
- *      "path"="/users/admin/new",
- *      "security"= "is_granted(['ROLE_ADMIN_SYSTEME'])" },
+*           collectionOperations={
+*              "get"={"security"="is_granted('ROLE_ADMIN')",
+*                    "security_message"="vous n'etes pas autorisé à acceder à cet service",
+*                    },
+*                  
+ *          "post"={
+ *                 "controller"=UserControle::class
+ *                 }
+ *  },
+ *          itemOperations={
+*                "get"={"security"="is_granted('ROLE_ADMIN')",
+    *                  "security_message"="vous n'etes pas autorisé à acceder à cet service",
+    *                  "normalization_context"={"groups"={"read"}}
+ *                     },
  * 
- *      "CreatedCaissier"={"method"= "POST", 
- *      "path"="/users/caissier/new", 
- *      "security"="is_granted(['ROLE_ADMIN_SYSTEME','ROLE_ADMIN'])"}
- *     },
- * 
- *       itemOperations = {
- *         "get"={
- *            "security"= "is_granted(['ROLE_ADMIN_SYSTEME','ROLE_ADMIN'])",
- *             "security_message"="Vous n'etes pas autorister à lister des utilisateurs, droit reservé au SUP_ADMIN et l'ADMIN" 
- *            },
- * 
- *          "blockedAdmin"={
- *             "method"="PUT",
- *              "path"="/users/admin/{id}",
- *              "security_message"="accés refusé, seule le SUP_ADMIN peut bloquer un adminitrateur"
- *           },
- *           
- *          "blockedCaissier"={
- *             "method"="put",
- *              "path"="/users/caissier/{id}",
- *              "security_message"="seule le SUP_ADMIN et l'Admin peuvent bloquer un adminitrateur"
- *           },
- *          
- *          "delete"={"security"= "is_granted(['ROLE_ADMIN_SYSTEME'])"}
- *              
- *      } 
+ *               "put"={
+ *                     
+ *                      "controller"=UserControle::class
+ *                     }
+ *               }
+ *       
  *  )
  */
 class User implements AdvancedUserInterface
@@ -59,30 +59,61 @@ class User implements AdvancedUserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Groups({"read", "write"})
      */
     private $username;
 
     /**
      * @ORM\Column(type="json")
+     * @Groups({"read", "write"})
      */
     private $roles = [];
 
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Groups({"write"})
      */
     private $password;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Role", inversedBy="users")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"read", "write"})
+     * 
      */
     private $role;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"read", "write"})
      */
-    private $is_active;
+    private $isActive;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Partenaire", inversedBy="userPartenaire", cascade={"persist", "remove"}, fetch="EAGER")
+     * @ApiProperty(attributes={"fetchEager": true})
+     */
+    private $partenaire;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Compte", mappedBy="user")
+     */
+    private $comptes;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Depot", mappedBy="user")
+     */
+    private $depots;
+
+    
+
+    public function __construct()
+    {
+        $this->comptes = new ArrayCollection();
+        $this->depots = new ArrayCollection();
+    }
+
 
     public function getId(): ?int
     {
@@ -167,17 +198,6 @@ class User implements AdvancedUserInterface
         return $this;
     }
 
-    public function getIsActive(): ?bool
-    {
-        return $this->is_active;
-    }
-
-    public function setIsActive(bool $is_active): self
-    {
-        $this->is_active = $is_active;
-
-        return $this;
-    }
 
 
     public function isAccountNonExpired(){
@@ -194,7 +214,94 @@ class User implements AdvancedUserInterface
 
     public function isEnabled(){
     
-        return  $this->is_active;
+        return  $this->isActive;
     }
+
+    public function getIsActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    public function getPartenaire(): ?Partenaire
+    {
+        return $this->partenaire;
+    }
+
+    public function setPartenaire(?Partenaire $partenaire): self
+    {
+        $this->partenaire = $partenaire;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Compte[]
+     */
+    public function getComptes(): Collection
+    {
+        return $this->comptes;
+    }
+
+    public function addCompte(Compte $compte): self
+    {
+        if (!$this->comptes->contains($compte)) {
+            $this->comptes[] = $compte;
+            $compte->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompte(Compte $compte): self
+    {
+        if ($this->comptes->contains($compte)) {
+            $this->comptes->removeElement($compte);
+            // set the owning side to null (unless already changed)
+            if ($compte->getUser() === $this) {
+                $compte->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Depot[]
+     */
+    public function getDepots(): Collection
+    {
+        return $this->depots;
+    }
+
+    public function addDepot(Depot $depot): self
+    {
+        if (!$this->depots->contains($depot)) {
+            $this->depots[] = $depot;
+            $depot->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDepot(Depot $depot): self
+    {
+        if ($this->depots->contains($depot)) {
+            $this->depots->removeElement($depot);
+            // set the owning side to null (unless already changed)
+            if ($depot->getUser() === $this) {
+                $depot->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
 
 }
