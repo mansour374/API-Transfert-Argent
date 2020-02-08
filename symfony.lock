@@ -16,6 +16,9 @@
             "src/Entity/.gitignore"
         ]
     },
+    "behat/transliterator": {
+        "version": "v1.3.0"
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -112,6 +115,12 @@
     },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
+    },
+    "jms/metadata": {
+        "version": "2.1.0"
+    },
+    "laminas/laminas-zendframework-bridge": {
+        "version": "1.0.1"
     },
     "lcobucci/jwt": {
         "version": "3.3.1"
@@ -240,6 +249,9 @@
             ".env"
         ]
     },
+    "symfony/form": {
+        "version": "v4.3.10"
+    },
     "symfony/framework-bundle": {
         "version": "4.2",
         "recipe": {
@@ -268,6 +280,9 @@
     "symfony/inflector": {
         "version": "v4.3.9"
     },
+    "symfony/intl": {
+        "version": "v4.3.10"
+    },
     "symfony/maker-bundle": {
         "version": "1.0",
         "recipe": {
@@ -280,8 +295,14 @@
     "symfony/mime": {
         "version": "v4.3.9"
     },
+    "symfony/options-resolver": {
+        "version": "v4.3.10"
+    },
     "symfony/orm-pack": {
         "version": "v1.0.7"
+    },
+    "symfony/polyfill-intl-icu": {
+        "version": "v1.13.1"
     },
     "symfony/polyfill-intl-idn": {
         "version": "v1.13.1"
@@ -351,6 +372,9 @@
     "symfony/stopwatch": {
         "version": "v4.3.9"
     },
+    "symfony/templating": {
+        "version": "v4.3.10"
+    },
     "symfony/translation-contracts": {
         "version": "v1.1.7"
     },
@@ -385,6 +409,9 @@
             "config/packages/validator.yaml"
         ]
     },
+    "symfony/var-dumper": {
+        "version": "v4.3.11"
+    },
     "symfony/var-exporter": {
         "version": "v4.3.9"
     },
@@ -405,6 +432,18 @@
     },
     "twig/twig": {
         "version": "v2.12.3"
+    },
+    "vich/uploader-bundle": {
+        "version": "1.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "1.5",
+            "ref": "c4f5755b37fb65b9c6a3cbdae91205c15a137ed4"
+        },
+        "files": [
+            "config/packages/vich_uploader.yaml"
+        ]
     },
     "webmozart/assert": {
         "version": "1.6.0"

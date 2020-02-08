@@ -5,17 +5,16 @@ namespace App\DataPersister;
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+
 
 class AppPersister implements DataPersisterInterface{
 
-private $entityManagerInterface;
-private $encoder;
 
- public function __construct(EntityManagerInterface $entityManagerInterface,UserPasswordEncoderInterface $encoder)
+
+ public function __construct(EntityManagerInterface $entityManagerInterface)
  {
      $this->entityManagerInterface=$entityManagerInterface;
-     $this->encoder=$encoder;
+   
 }
  
     public function supports($data): bool
@@ -26,8 +25,7 @@ private $encoder;
 
     public function persist($data)
     {
-        $data->setPassword($this->encoder->encodePassword($data, $data->getPassword()));
-        $data->setRoles(["ROLE_".$data->getRole()->getlibelle()]);
+        
         $data->eraseCredentials();
 
         $this->entityManagerInterface->persist($data);
