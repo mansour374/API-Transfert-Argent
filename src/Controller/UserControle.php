@@ -23,8 +23,11 @@ class UserControle{
 
     public function __invoke(User $data): User
     {
-        $data->setPassword($this->encoder->encodePassword($data, $data->getPassword()));
-        $data->setRoles(["ROLE_".$data->getRole()->getlibelle()]);
+        if($data->getId()==null){
+            $data->setPassword($this->encoder->encodePassword($data, $data->getPassword()));
+            $data->setRoles(["ROLE_".$data->getRole()->getlibelle()]);
+        }
+       
         $token=$this->tokenStorage->getToken();
        
         $userlog = $token->getUser();

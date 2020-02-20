@@ -18,7 +18,19 @@ class PartenaireRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Partenaire::class);
     }
+// fonction de recherche par ninéa
 
+    public function searchNinea($ninea){
+        $QueryBuilder = $this->_em->createQueryBuilder()
+            ->select('p') 
+            ->from(Partenaire::class, 'p')
+            ->where('p.ninea=:ninea')
+            ->setParameter('ninea', $ninea);
+
+            $Query = $QueryBuilder->getQuery();
+
+            return $Query->getOneOrNullResult();
+    }
     // /**
     //  * @return Partenaire[] Returns an array of Partenaire objects
     //  */

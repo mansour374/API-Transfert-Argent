@@ -1,0 +1,40 @@
+<page backtop="20mm" backright="10mm" backbottom="20mm"  backleft="10mm">
+                                  
+
+<p text-align="center"> <b>CONTRAT DE PARTENARIAT</b> </p><br><br>
+                                       {% for date in lignecontrat  %}
+                                          <p text-align="right"> Fait à Dakar le {{date.DateCreation | date('d/m/Y')}}</p>
+                                       {% endfor %}
+                                      
+
+ Entre les soussignés: <br><br>
+La Société <b>wari Service</b> au Capital de <b>50 000 000 FCFA</b>, <br> <br>
+dont le siége social est <b>Siccap liberte 3</b>, enregistré au Registre du Commerce et <br><br>
+des Sociétés de <b>SN DKR 2020 A 02020 </b> sous le numéro de NINEA<b> 000110420 1R2</b>, <br><br> 
+Représenté par M. <b>Mansour Yade</b><br> <br>
+
+ci-aprés désigne <b>[la Société SenTransfertMoney SARL]</b>,<br><br>
+
+  d'une part,<br><br>
+{% for contrat in lignecontrat %}
+  et La Société <b>{{contrat.contrats.raisonSociale}}</b> au capital de <b> {{contrat.contrats.capital}} FCFA</b>, <br><br>
+  dont le siége sociale est <b>{{contrat.contrats.adresse}}</b>, enregistré au Registre du Commerce et <br><br>
+  des Sociétés de <b>{{contrat.contrats.rccm}} </b> sous le numéro de NINEA<b> {{contrat.contrats.ninea}}</b>, <br><br> 
+  représentée par M. 
+  {% for user  in contrat.contrats.userPartenaire %}
+    <b> {{user.username}} </b>,<br><br>
+  {% endfor %}
+
+  ci-aprés dénommée <b>[le Partenaire {{contrat.contrats.raisonSociale}}]</b>, <br> <br>
+ 
+  d'autre part,<br><br>
+
+  il a été convenu ce qui suit: <br><br>
+
+ <b> Préambule </b><br><br>
+
+ <label> {{contrat.closes.close | nl2br}} </label>
+
+{% endfor %}ph
+  
+</page>

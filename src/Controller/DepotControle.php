@@ -14,8 +14,6 @@ class DepotControle{
     public function __construct(TokenStorageInterface $tokenStorage )
     {
         $this->tokenStorage = $tokenStorage;
-       
-      
         
     }
 
@@ -25,12 +23,13 @@ class DepotControle{
       {
                $RecupUserDepot = $this->tokenStorage->getToken()->getUser();
 
-             // $data->setUser($RecupUserDepot);        
+                  
       }
         
       $totalSolde =$data->getCompte()->getSolde() + $data->getMontantDepot();
       
       $data->getCompte()->setSolde($totalSolde);
+      $data->getCompte()->setMontantPlafond($totalSolde);
        
         return $data;
     }

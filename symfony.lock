@@ -119,6 +119,12 @@
     "jms/metadata": {
         "version": "2.1.0"
     },
+    "laminas/laminas-code": {
+        "version": "3.4.1"
+    },
+    "laminas/laminas-eventmanager": {
+        "version": "3.2.1"
+    },
     "laminas/laminas-zendframework-bridge": {
         "version": "1.0.1"
     },
@@ -184,6 +190,9 @@
     },
     "psr/log": {
         "version": "1.1.2"
+    },
+    "spipu/html2pdf": {
+        "version": "v5.2.1"
     },
     "symfony/asset": {
         "version": "v4.3.9"
@@ -429,6 +438,9 @@
     },
     "symfony/yaml": {
         "version": "v4.3.9"
+    },
+    "tecnickcom/tcpdf": {
+        "version": "6.3.3"
     },
     "twig/twig": {
         "version": "v2.12.3"

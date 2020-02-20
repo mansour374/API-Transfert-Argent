@@ -89,6 +89,24 @@ class Partenaire
      */
     private $comptes;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read", "write"})
+     */
+    private $raisonsociale;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read", "write"})
+     */
+    private $adresse;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"read", "write"})
+     */
+    private $capital;
+
     public function __construct()
     {
         $this->userPartenaire = new ArrayCollection();
@@ -218,6 +236,42 @@ class Partenaire
     public function setMontantDepot(?int $montantDepot): self
     {
         $this->montantDepot = $montantDepot;
+
+        return $this;
+    }
+
+    public function getRaisonsociale(): ?string
+    {
+        return $this->raisonsociale;
+    }
+
+    public function setRaisonsociale(?string $raisonsociale): self
+    {
+        $this->raisonsociale = $raisonsociale;
+
+        return $this;
+    }
+
+    public function getAdresse(): ?string
+    {
+        return $this->adresse;
+    }
+
+    public function setAdresse(?string $adresse): self
+    {
+        $this->adresse = $adresse;
+
+        return $this;
+    }
+
+    public function getCapital(): ?int
+    {
+        return $this->capital;
+    }
+
+    public function setCapital(?int $capital): self
+    {
+        $this->capital = $capital;
 
         return $this;
     }

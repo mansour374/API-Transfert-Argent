@@ -40,14 +40,13 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  *                     },
  * 
  *               "put"={
- *                     
  *                      "controller"=UserControle::class
  *                     }
  *               }
  *       
  *  )
  */
-class User implements AdvancedUserInterface
+class User implements UserInterface
 {
     /**
      * 
@@ -93,6 +92,7 @@ class User implements AdvancedUserInterface
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Partenaire", inversedBy="userPartenaire", cascade={"persist", "remove"}, fetch="EAGER")
      * @ApiProperty(attributes={"fetchEager": true})
+     * @Groups({"read", "write"})
      */
     private $partenaire;
 
@@ -106,12 +106,24 @@ class User implements AdvancedUserInterface
      */
     private $depots;
 
-    
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\AffectationCompte", mappedBy="userAfect")
+     */
+    private $userAfect;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\AffectationCompte", mappedBy="userAfecteCompte")
+     */
+    private $userAfectCompte;
+
+    
     public function __construct()
     {
         $this->comptes = new ArrayCollection();
         $this->depots = new ArrayCollection();
+        $this->userAfect = new ArrayCollection();
+        $this->userAfectCompte = new ArrayCollection();
+       
     }
 
 
@@ -199,24 +211,6 @@ class User implements AdvancedUserInterface
     }
 
 
-
-    public function isAccountNonExpired(){
-        return true;
-    }
-    public function isAccountNonLocked(){
-        return true;
-    }
-    public function isCredentialsNonExpired(){
-
-        return true;
-    }
-    
-
-    public function isEnabled(){
-    
-        return  $this->isActive;
-    }
-
     public function getIsActive(): ?bool
     {
         return $this->isActive;
@@ -302,6 +296,70 @@ class User implements AdvancedUserInterface
 
         return $this;
     }
+
+    /**
+     * @return Collection|AffectationCompte[]
+     */
+    public function getUserAfect(): Collection
+    {
+        return $this->userAfect;
+    }
+
+    public function addUserAfect(AffectationCompte $userAfect): self
+    {
+        if (!$this->userAfect->contains($userAfect)) {
+            $this->userAfect[] = $userAfect;
+            $userAfect->setUserAfect($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserAfect(AffectationCompte $userAfect): self
+    {
+        if ($this->userAfect->contains($userAfect)) {
+            $this->userAfect->removeElement($userAfect);
+            // set the owning side to null (unless already changed)
+            if ($userAfect->getUserAfect() === $this) {
+                $userAfect->setUserAfect(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|AffectationCompte[]
+     */
+    public function getUserAfectCompte(): Collection
+    {
+        return $this->userAfectCompte;
+    }
+
+    public function addUserAfectCompte(AffectationCompte $userAfectCompte): self
+    {
+        if (!$this->userAfectCompte->contains($userAfectCompte)) {
+            $this->userAfectCompte[] = $userAfectCompte;
+            $userAfectCompte->setUserAfecteCompte($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserAfectCompte(AffectationCompte $userAfectCompte): self
+    {
+        if ($this->userAfectCompte->contains($userAfectCompte)) {
+            $this->userAfectCompte->removeElement($userAfectCompte);
+            // set the owning side to null (unless already changed)
+            if ($userAfectCompte->getUserAfecteCompte() === $this) {
+                $userAfectCompte->setUserAfecteCompte(null);
+            }
+        }
+
+        return $this;
+    }
+
+  
 
 
 }
