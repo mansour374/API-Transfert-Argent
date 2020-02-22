@@ -2,11 +2,38 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+
 use Doctrine\ORM\Mapping as ORM;
+use App\Controller\AffectationController;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *          
+ * normalizationContext={"groups"={"read"}},
+ *          denormalizationContext={"groups"={"write"}},
+ * 
+*           collectionOperations={
+*              "get"={"security"="is_granted('ROLE_ADMIN_PARTENAIRE')",
+*                    "security_message"="vous n'etes pas autorisé à acceder à cet service",
+*                    },
+*                  
+ *          "post"={
+ *                  "controller"=AffectationController::class
+ *                 }
+ *  },
+ *          itemOperations={
+*                "get"={"security"="is_granted('ROLE_ADMIN_PARTENAIRE')",
+    *                  "security_message"="vous n'etes pas autorisé à acceder à cet service",
+    *                  "normalization_context"={"groups"={"read"}}
+ *                     },
+ * 
+ *               "put"={
+ *                      "controller"=AffectationController::class
+ *                     }
+ *               }
+ * )
  * @ORM\Entity(repositoryClass="App\Repository\AffectationCompteRepository")
  */
 class AffectationCompte
@@ -15,16 +42,19 @@ class AffectationCompte
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     *
      */
     private $id;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"read","write"})
      */
     private $dateDebut;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"read","write"})
      */
     private $dateFin;
 
@@ -32,17 +62,20 @@ class AffectationCompte
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Compte", inversedBy="affectationComptes")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"read", "write"})
      */
     private $compte;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="userAfect")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"read","write"})
      */
     private $userAfect;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="userAfectCompte")
+     * @Groups({"read","write"})
      */
     private $userAfecteCompte;
 
