@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Controller\RetraitController;
 use App\Controller\TransactionControle;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -33,8 +34,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *               "put"={
  *                     
  *                      "controller"=TransactionControle::class
- *                     }
- *               }
+ *                     },
+ * 
+ *              "Retrait"={"method"="PUT",
+ *                        "path"="/transactions/retrait/{id}",
+ *                        "security"="is_granted('ROLE_USER_PARTENAIRE')",
+ *                        "security_message"="vous n'etes pas autorisé à acceder à cet service",
+ *                      
+ *                        "controller"=RetraitController::class
+ *                      }
+ *          }
  * )
  * @ORM\Entity(repositoryClass="App\Repository\TransactionRepository")
  */
@@ -103,11 +112,6 @@ class Transaction
      */
     private $partWari;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="transactions")
-     * @Groups({"read", "write"})
-     */
-    private $User;
 
     /**
      * @ORM\Column(type="integer")
@@ -121,22 +125,15 @@ class Transaction
      */
     private $telEnvoyeur;
 
-   
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"read", "write"})
-     */
-    private $cniBeneficiaire;
-
-  
-
     /**
      * @ORM\Column(type="float")
+     * @Groups({"read"})
      */
     private $partAgenceEnvoie;
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"read"})
      */
     private $partAgenceRetrait;
 
@@ -153,7 +150,48 @@ class Transaction
      */
     private $compteRetrait;
 
-    
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"read"})
+     */
+    private $status;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="transactions")
+     * @ORM\JoinColumn(nullable=false)
+     * @Groups({"read"})
+     */
+    private $userEnvoie;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="transactions")
+     * @Groups({"read"})
+     */
+    private $userRetrait;
+
+    /**
+     * @ORM\Column(type="string", length=13, nullable=true)
+     * @Groups({"read", "write"})
+     */
+    private $cniBeneficiaire;
+
+    /**
+     * @ORM\Column(type="datetime")
+     * @Groups({"read"})
+     */
+    private $dateEnvoie;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"read"})
+     */
+    private $dateRetrait;
+
+     public function __construct()
+    {
+        $this->dateEnvoie = new \DateTime('@'.strtotime('now'));
+    } 
+
     public function getId(): ?int
     {
         return $this->id;
@@ -270,17 +308,6 @@ class Transaction
         return $this;
     }
 
-    public function getUser(): ?User
-    {
-        return $this->User;
-    }
-
-    public function setUser(?User $User): self
-    {
-        $this->User = $User;
-
-        return $this;
-    }
 
     public function getMontantEnvoie(): ?int
     {
@@ -305,35 +332,6 @@ class Transaction
 
         return $this;
     }
-
-    
-    public function getCniBeneficiaire(): ?string
-    {
-        return $this->cniBeneficiaire;
-    }
-
-    public function setCniBeneficiaire(string $cniBeneficiaire): self
-    {
-        $this->cniBeneficiaire = $cniBeneficiaire;
-
-        return $this;
-    }
-
-   
-
-    public function getUserEnvoie(): ?User
-    {
-        return $this->userEnvoie;
-    }
-
-    public function setUserEnvoie(?User $userEnvoie): self
-    {
-        $this->userEnvoie = $userEnvoie;
-
-        return $this;
-    }
-
-
 
     public function getPartAgenceEnvoie(): ?float
     {
@@ -379,6 +377,78 @@ class Transaction
     public function setCompteRetrait(?Compte $compteRetrait): self
     {
         $this->compteRetrait = $compteRetrait;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getUserEnvoie(): ?User
+    {
+        return $this->userEnvoie;
+    }
+
+    public function setUserEnvoie(?User $userEnvoie): self
+    {
+        $this->userEnvoie = $userEnvoie;
+
+        return $this;
+    }
+
+    public function getUserRetrait(): ?User
+    {
+        return $this->userRetrait;
+    }
+
+    public function setUserRetrait(?User $userRetrait): self
+    {
+        $this->userRetrait = $userRetrait;
+
+        return $this;
+    }
+
+    public function getCniBeneficiaire(): ?string
+    {
+        return $this->cniBeneficiaire;
+    }
+
+    public function setCniBeneficiaire(?string $cniBeneficiaire): self
+    {
+        $this->cniBeneficiaire = $cniBeneficiaire;
+
+        return $this;
+    }
+
+    public function getDateEnvoie(): ?\DateTimeInterface
+    {
+        return $this->dateEnvoie;
+    }
+
+    public function setDateEnvoie(\DateTimeInterface $dateEnvoie): self
+    {
+        $this->dateEnvoie = $dateEnvoie;
+
+        return $this;
+    }
+
+    public function getDateRetrait(): ?\DateTimeInterface
+    {
+        return $this->dateRetrait;
+    }
+
+    public function setDateRetrait(?\DateTimeInterface $dateRetrait): self
+    {
+        $this->dateRetrait = $dateRetrait;
 
         return $this;
     }

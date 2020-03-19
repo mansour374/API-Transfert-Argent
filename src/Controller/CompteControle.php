@@ -33,25 +33,28 @@ class CompteControle{
       {
         //Création compte partenaire
         $request = new Request();
-        $value = json_decode($request->getContent(), true);
-      
-        $ninea = $value['partenaire']['ninea'];
 
+        $value = json_decode($request->getContent(), true);
+   
+        $ninea = $value['partenaire']['ninea'];
+    
+        
         $partenaire = $this->partenairerepo->searchNinea($ninea); 
-     
+        
       if($partenaire ==null){
         $userPartenaire= $data->getPartenaire()->getUserPartenaire();
- 
+        
         foreach ($userPartenaire as $users) {
           $users->setPassword($this->encoder->encodePassword($users, $users->getPassword()))
-              ->setRoles(["ROLE_".$users->getRole()->getLibelle()])
-              ->getPartenaire()->addUserPartenaire($users);
+                ->setRoles(["ROLE_".$users->getRole()->getLibelle()])
+                ->getPartenaire()->addUserPartenaire($users);
         }   
-
+   
       }else{
         $data->setPartenaire($partenaire);
+        
       }
-      
+
     }
                
       $RecupUsercreate = $this->tokenStorage->getToken()->getUser();
@@ -72,8 +75,6 @@ class CompteControle{
       }else{
         throw new Exception("le montant d'ouverture de compte doit etre au minimum 500000 FCFA");
       }
-
-    
         return $data;
     }
         

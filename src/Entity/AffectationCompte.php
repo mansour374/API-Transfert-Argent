@@ -16,7 +16,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * 
 *           collectionOperations={
 *              "get"={"security"="is_granted('ROLE_ADMIN_PARTENAIRE')",
-*                    "security_message"="vous n'etes pas autorisé à acceder à cet service",
+*                    "security_message"="vous n'etes pas autorisé à acceder à ce service",
 *                    },
 *                  
  *          "post"={

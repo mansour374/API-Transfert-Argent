@@ -53,6 +53,7 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     *  @Groups({"read"})
      */
     private $id;
 
@@ -61,6 +62,24 @@ class User implements UserInterface
      * @Groups({"read", "write"})
      */
     private $username;
+
+      /**
+     * @ORM\Column(type="string", length=30)
+     * @Groups({"read", "write"})
+     */
+    private $nom;
+
+    /**
+     * @ORM\Column(type="string", length=30)
+     * @Groups({"read", "write"})
+     */
+    private $prenom;
+
+    /**
+     * @ORM\Column(type="string", length=50)
+     * @Groups({"read", "write"})
+     */
+    private $email;
 
     /**
      * @ORM\Column(type="json")
@@ -116,6 +135,11 @@ class User implements UserInterface
      */
     private $userAfectCompte;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Transaction", mappedBy="userEnvoie")
+     */
+    private $transactions;
+
     
     public function __construct()
     {
@@ -123,7 +147,8 @@ class User implements UserInterface
         $this->depots = new ArrayCollection();
         $this->userAfect = new ArrayCollection();
         $this->userAfectCompte = new ArrayCollection();
-       
+       $this->isActive = true;
+       $this->transactions = new ArrayCollection();
     }
 
 
@@ -355,6 +380,73 @@ class User implements UserInterface
                 $userAfectCompte->setUserAfecteCompte(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Transaction[]
+     */
+    public function getTransactions(): Collection
+    {
+        return $this->transactions;
+    }
+
+    public function addTransaction(Transaction $transaction): self
+    {
+        if (!$this->transactions->contains($transaction)) {
+            $this->transactions[] = $transaction;
+            $transaction->setUserEnvoie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransaction(Transaction $transaction): self
+    {
+        if ($this->transactions->contains($transaction)) {
+            $this->transactions->removeElement($transaction);
+            // set the owning side to null (unless already changed)
+            if ($transaction->getUserEnvoie() === $this) {
+                $transaction->setUserEnvoie(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): self
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getPrenom(): ?string
+    {
+        return $this->prenom;
+    }
+
+    public function setPrenom(string $prenom): self
+    {
+        $this->prenom = $prenom;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
 
         return $this;
     }

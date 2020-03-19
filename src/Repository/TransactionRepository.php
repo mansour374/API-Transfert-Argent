@@ -19,6 +19,23 @@ class TransactionRepository extends ServiceEntityRepository
         parent::__construct($registry, Transaction::class);
     }
 
+    //fonction de recherche par numero de code d'envoie par la methode query builder
+    public function RechercheCodeEnvoie($codeEnvoie)
+    {
+        $queryBuilder = $this->_em->createQueryBuilder()
+            ->select('t')
+            ->from(Transaction::class, 't')
+            ->where('t.codeEnvoie = :codeEnvoie')
+            ->setParameter('codeEnvoie', $codeEnvoie);
+
+        $query = $queryBuilder->getQuery();
+        return $query->getOneOrNullResult();
+    }
+
+
+
+
+
     // /**
     //  * @return Transaction[] Returns an array of Transaction objects
     //  */

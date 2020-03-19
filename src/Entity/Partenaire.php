@@ -66,6 +66,24 @@ class Partenaire
      */
     private $email;
 
+      /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read","write"})
+     */
+    private $raisonsociale;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read","write"})
+     */
+    private $adresse;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"read","write"})
+     */
+    private $capital;
+
     /**
      * @ORM\Column(type="string", length=9)
      * @Assert\Regex(
@@ -89,23 +107,7 @@ class Partenaire
      */
     private $comptes;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"read", "write"})
-     */
-    private $raisonsociale;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"read", "write"})
-     */
-    private $adresse;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"read", "write"})
-     */
-    private $capital;
+  
 
     public function __construct()
     {

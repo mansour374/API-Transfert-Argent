@@ -197,6 +197,9 @@
     "symfony/asset": {
         "version": "v4.3.9"
     },
+    "symfony/browser-kit": {
+        "version": "v4.3.11"
+    },
     "symfony/cache": {
         "version": "v4.3.9"
     },
@@ -227,6 +230,9 @@
     },
     "symfony/doctrine-bridge": {
         "version": "v4.3.9"
+    },
+    "symfony/dom-crawler": {
+        "version": "v4.3.11"
     },
     "symfony/dotenv": {
         "version": "v4.3.9"
@@ -279,6 +285,12 @@
             "src/Controller/.gitignore",
             "src/Kernel.php"
         ]
+    },
+    "symfony/http-client": {
+        "version": "v4.3.11"
+    },
+    "symfony/http-client-contracts": {
+        "version": "v1.1.8"
     },
     "symfony/http-foundation": {
         "version": "v4.3.9"
@@ -444,6 +456,9 @@
     },
     "twig/twig": {
         "version": "v2.12.3"
+    },
+    "twilio/sdk": {
+        "version": "6.0.1"
     },
     "vich/uploader-bundle": {
         "version": "1.5",
